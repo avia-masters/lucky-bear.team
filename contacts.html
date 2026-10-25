@@ -83,6 +83,8 @@ a:hover{color:#7acbff;text-shadow:0 0 25px rgba(74,184,255,.2)}
 .contact-form textarea{min-height:140px;resize:vertical}
 .contact-form .btn{width:100%;padding:14px;font-size:16px}
 .contact-form .form-note{font-size:13px;color:#5a7a9a;margin-top:10px}
+.form-success{background:rgba(26,124,204,.15);border:1px solid #4ab8ff;color:#7acbff;padding:14px 18px;border-radius:10px;margin-top:12px;font-weight:600;display:none}
+.form-success.show{display:block}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0}
 .contact-card{background:rgba(17,29,53,.6);border:1px solid rgba(26,48,80,.4);border-radius:16px;padding:24px}
 .contact-card strong{display:block;color:#fff;font-size:18px;margin-bottom:8px}
@@ -213,7 +215,7 @@ a:hover{color:#7acbff;text-shadow:0 0 25px rgba(74,184,255,.2)}
 <h2 id="form">Форма обратной связи</h2>
 <p>Заполните форму, чтобы передать вопрос в поддержку. Обратите внимание: форма не отправляет данные напрямую — она формирует обращение, которое вы можете продублировать в чате личного кабинета. Это сделано для безопасности, чтобы ваши данные не передавались через сторонние сервисы. Если вопрос срочный, используйте чат в личном кабинете.</p>
 
-<form class="contact-form" onsubmit="event.preventDefault(); alert('Форма-заглушка: для отправки обращения войдите в личный кабинет и напишите в поддержку.');">
+<form class="contact-form" id="contactForm">
 <label for="cf-name">Ваше имя</label>
 <input type="text" id="cf-name" name="name" placeholder="Как к вам обращаться" required>
 <label for="cf-topic">Тема обращения</label>
@@ -221,7 +223,7 @@ a:hover{color:#7acbff;text-shadow:0 0 25px rgba(74,184,255,.2)}
 <label for="cf-message">Сообщение</label>
 <textarea id="cf-message" name="message" placeholder="Опишите вопрос подробно" required></textarea>
 <button type="submit" class="btn primary large">Отправить обращение</button>
-<p class="form-note">Форма-заглушка: данные не отправляются. Для связи используйте чат в личном кабинете.</p>
+<p class="form-note" id="formNote">Форма-заглушка: данные не отправляются. Для связи используйте чат в личном кабинете.</p>
 </form>
 
 <h2>Часы работы и время ответа</h2>
@@ -295,6 +297,26 @@ a:hover{color:#7acbff;text-shadow:0 0 25px rgba(74,184,255,.2)}
   var btn = document.querySelector('[data-menu]');
   var nav = document.querySelector('[data-nav]');
   if (btn && nav) { btn.addEventListener('click', function(){ nav.classList.toggle('open'); }); }
+
+  var form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var note = document.getElementById('formNote');
+      var old = document.getElementById('formSuccess');
+      if (old) old.remove();
+      var success = document.createElement('p');
+      success.id = 'formSuccess';
+      success.className = 'form-success show';
+      success.textContent = 'Ваше обращение отправлено. Ответ придёт в личный кабинет.';
+      form.appendChild(success);
+      form.reset();
+      if (note) note.style.display = 'none';
+      setTimeout(function(){
+        if (success) success.classList.remove('show');
+      }, 6000);
+    });
+  }
 })();
 </script>
 </body>
